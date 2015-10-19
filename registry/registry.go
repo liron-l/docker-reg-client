@@ -31,7 +31,8 @@ type Client struct {
 	// Search gives access to the /search part of the Registry API.
 	Search *SearchService
 
-	client *http.Client
+	// Client exposes the registry http client used for calling the remote registry
+	Client *http.Client
 }
 
 // RegistryError encapsulates any errors which result from communicating with
@@ -55,7 +56,7 @@ func NewClient() *Client {
 
 	c := &Client{
 		BaseURL: baseURL,
-		client:  http.DefaultClient,
+		Client:  http.DefaultClient,
 	}
 
 	c.Hub = &HubService{client: c}
@@ -100,7 +101,7 @@ func (c *Client) newRequest(method, urlStr string, auth Authenticator, body inte
 
 // Performs the given request and decodes the response into the variable v.
 func (c *Client) do(req *http.Request, v interface{}) (*http.Response, error) {
-	resp, err := c.client.Do(req)
+	resp, err := c.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
